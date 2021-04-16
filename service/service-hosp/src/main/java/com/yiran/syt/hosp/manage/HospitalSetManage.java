@@ -12,9 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -29,7 +26,6 @@ public class HospitalSetManage {
 
     /**
      * 获取所有数据
-     *
      * @return
      */
     public ResponseData doGetAll(JSONObject param) throws Throwable {
@@ -38,8 +34,8 @@ public class HospitalSetManage {
         }
 
         // 分页数据检查
-        Integer currentPage = Integer.valueOf(param.get("currentPage").toString());
-        Integer limit = Integer.valueOf(param.get("limit").toString());
+        Integer currentPage = param.getInteger("currentPage");
+        Integer limit = param.getInteger("limit");
         if (limit < 0 || currentPage < 0) {
             throw new RuntimeException("参数错误");
         }
@@ -47,11 +43,11 @@ public class HospitalSetManage {
         // 条件信息检查
         Page<HospitalSet> page = new Page<>(currentPage, limit);
         QueryWrapper<HospitalSet> queryWrapper = new QueryWrapper<>();
-        String hosName = param.get("hosName").toString();
+        String hosName = param.getString("hosName");
         if (!StringUtils.isEmpty(hosName)) {
             queryWrapper.eq("hosname", hosName);
         }
-        String hosCode = param.get("hosCode").toString();
+        String hosCode = param.getString("hosCode");
         if (!StringUtils.isEmpty(hosCode)) {
             queryWrapper.eq("hoscode", hosCode);
         }
@@ -59,7 +55,7 @@ public class HospitalSetManage {
     }
 
     /**
-     * 删除
+     * 删除/批量
      * @param param
      * @return
      * @throws Throwable
@@ -87,11 +83,11 @@ public class HospitalSetManage {
         }
 
         // 基本数据验证
-        String hosName = String.valueOf(param.get("hosName"));
-        String hosCode = String.valueOf(param.get("hosCode"));
-        String contactsName = String.valueOf(param.get("contactsName"));
-        String contactsPhone = String.valueOf(param.get("contactsPhone"));
-        String apiUrl = String.valueOf(param.get("apiUrl"));
+        String hosName = param.getString("hosName");
+        String hosCode = param.getString("hosCode");
+        String contactsName = param.getString("contactsName");
+        String contactsPhone = param.getString("contactsPhone");
+        String apiUrl = param.getString("apiUrl");
         if(StringUtils.isEmpty(hosName) || StringUtils.isEmpty(hosCode)
                 || StringUtils.isEmpty(contactsName) || StringUtils.isEmpty(contactsPhone)
                 || StringUtils.isEmpty(apiUrl)){
@@ -108,5 +104,21 @@ public class HospitalSetManage {
         hospitalSet.setApiUrl(apiUrl);
         hospitalSet.setSignKey(MD5Util.encrypt(System.currentTimeMillis() + "" + new Random().nextInt(1000)));
         return hospitalSetService.save(hospitalSet) ? ResponseData.success() : ResponseData.err();
+    }
+
+    /**
+     * 根据id获取医院信息
+     * @param param
+     * @return
+     */
+    public ResponseData doGetHosp(JSONObject param) throws Throwable{
+        if (param == null) {
+            throw new RuntimeException("参数错误");
+        }
+        long id = param.getLong("id");
+        if(id < 1L){
+            throw new  RuntimeException("参数错误");
+        }
+        return ResponseData.success(hospitalSetService.getById(id));
     }
 }

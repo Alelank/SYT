@@ -24,28 +24,30 @@ public class HospitalSetController {
     @Resource
     private HospitalSetManage hospitalSetManage;
 
-    /**
-     * @param param
-     * @return
-     * @throws Throwable
-     */
+
+    @ApiOperation(value = "获取医院信息")
+    @RequestMapping(value = "/hosp", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    public ResponseData getHosp(@RequestBody JSONObject param) throws Throwable {
+        return hospitalSetManage.doGetHosp(param);
+    }
+
+
+    @ApiOperation(value = "获取所有医院信息")
     @RequestMapping(value = "/list", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
-    @ApiOperation(value = "获取所有数据")
     public ResponseData list(@RequestBody JSONObject param) throws Throwable {
         return hospitalSetManage.doGetAll(param);
     }
 
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ApiOperation(value = "添加医院信息")
+    @RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     public ResponseData add(@RequestBody JSONObject param) throws Throwable {
         return hospitalSetManage.doAdd(param);
     }
 
 
-
+    @ApiOperation(value = "批量/删除医院信息")
     @RequestMapping(value = "/delete", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    @ApiOperation(value = "根据id批量删除，逻辑删除")
     public ResponseData delete(@RequestBody JSONObject param) throws Throwable {
         return hospitalSetManage.doDelete(param);
     }
