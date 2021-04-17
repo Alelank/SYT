@@ -61,8 +61,8 @@ public class ResponseData<T> {
         return success(null);
     }
 
-    public static <T> ResponseData<T> success(T data){
-       return success(data,"");
+    public static <T> ResponseData<T> success(T data) {
+        return success(data, "");
     }
 
     public static <T> ResponseData<T> success(T data, String message) {
@@ -77,19 +77,32 @@ public class ResponseData<T> {
     }
 
     public static <T> ResponseData<T> err() {
+        return err("");
+    }
+
+    public static <T> ResponseData<T> err(String message) {
         return err("", ResponseEnum.FAIL);
     }
 
-    public static <T> ResponseData<T> err(String message, ResponseEnum responseEnum) {
+    public static <T> ResponseData<T> err(String msg, ResponseEnum responseEnum) {
+        return err(null, msg, responseEnum);
+    }
+
+    public static <T> ResponseData<T> err(T data, String msg, ResponseEnum responseEnum) {
         ResponseData<T> responseData = new ResponseData<>();
         responseData.setCode(ResponseEnum.FAIL.getCode());
         responseData.setSuccess(false);
-        if (!StringUtils.isEmpty(message) && null != responseEnum) {
-            responseData.setMessage(responseEnum.getMessage());
-        } else if (!StringUtils.isEmpty(message) && null == responseEnum) {
-            responseData.setMessage(message);
+        if (null != data) {
+            responseData.setData(data);
+        }
+        if (!StringUtils.isEmpty(msg)) {
+            responseData.setMessage(msg);
         } else {
-            responseData.setMessage(responseEnum.getMessage());
+            if (responseEnum != null) {
+                responseData.setMessage(responseEnum.getMessage());
+            }else {
+                responseData.setMessage(ResponseEnum.PARAM_ERROR.getMessage());
+            }
         }
         return responseData;
     }
