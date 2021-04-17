@@ -39,7 +39,7 @@ public class HospitalSetController {
     }
 
 
-    @ApiOperation(value = "添加医院信息")
+    @ApiOperation(value = "添加/更新医院信息")
     @RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     public ResponseData add(@RequestBody JSONObject param) throws Throwable {
         return hospitalSetManage.doAdd(param);
@@ -50,6 +50,18 @@ public class HospitalSetController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public ResponseData delete(@RequestBody JSONObject param) throws Throwable {
         return hospitalSetManage.doDelete(param);
+    }
+
+    @ApiOperation(value = "医院状态锁定/解锁")
+    @RequestMapping(value = "/hosplock", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseData hospLock(@RequestBody JSONObject param) throws Throwable {
+        return hospitalSetManage.doHospLock(param);
+    }
+
+    @ApiOperation(value = "发送签名秘钥")
+    @RequestMapping(value = "/sendkey", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public ResponseData sendKey(@RequestBody JSONObject param) throws Throwable {
+        return hospitalSetManage.doSendKey(param);
     }
 
 }
